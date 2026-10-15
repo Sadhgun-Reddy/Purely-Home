@@ -1,0 +1,6 @@
+{
+  "name": "Purely Home – The Cloud Kitchen",
+  "description": "Authentic home-style cloud kitchen in Hafeezpet and Miyapur, Hyderabad. Crafted with cold-pressed oils, freshly roasted whole spices, and domestic kitchencare.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

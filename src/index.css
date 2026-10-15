@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #fff8f4;
+  --color-surface-dim: #e3d8cd;
+  --color-surface-bright: #fff8f4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #fef2e7;
+  --color-surface-container: #f8ece1;
+  --color-surface-container-high: #f2e6db;
+  --color-surface-container-highest: #ece1d6;
+  --color-on-surface: #201b14;
+  --color-on-surface-variant: #414844;
+  --color-outline: #727973;
+  --color-outline-variant: #c1c8c2;
+
+  --color-primary: #1a3c2c;
+  --color-primary-container: #315342;
+  --color-primary-fixed: #c5ebd5;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #a0c5b0;
+
+  --color-secondary: #9d4225;
+  --color-secondary-container: #fe8c69;
+  --color-secondary-fixed: #ffdbd0;
+  --color-on-secondary: #ffffff;
+
+  --color-tertiary: #3b3525;
+  --color-tertiary-container: #534b3b;
+  --color-tertiary-fixed: #ede1cb;
+  --color-tertiary-fixed-dim: #d1c5b0;
+  --color-on-tertiary: #ffffff;
+
+  --color-brand-cream: #F7F0E4;
+  --color-brand-green: #315342;
+  --color-brand-greenDark: #243F32;
+  --color-brand-terracotta: #B95738;
+  --color-brand-terracottaDark: #A04529;
+  --color-brand-sand: #E8DCC6;
+  --color-brand-charcoal: #302A23;
+  --color-brand-muted: #594E42;
+
+  --font-serif: "Playfair Display", "Noto Sans Telugu", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans Telugu", system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", "Noto Sans Telugu", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", "Noto Sans Telugu", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-body);
+    background-color: #fff8f4;
+    color: #201b14;
+  }
+
+  body {
+    background-color: #fff8f4;
+    color: #201b14;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+/* Custom scrollbar styling for cart and modal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f8ece1;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c8c2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #727973;
+}
