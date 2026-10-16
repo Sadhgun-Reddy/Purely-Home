@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import type { Language } from '../data/translations';
-import { TRANSLATIONS } from '../data/translations';
+import type { Language } from '../data/translations.ts';
+import { TRANSLATIONS } from '../data/translations.ts';
+import { handleImageError } from '../utils/imageFallback.ts';
 
 interface VisualChronicleProps {
   language: Language;
+  onViewFullGallery?: () => void;
 }
 
-export const VisualChronicle: React.FC<VisualChronicleProps> = ({ language }) => {
+export const VisualChronicle: React.FC<VisualChronicleProps> = ({ language, onViewFullGallery }) => {
   const [activeImage, setActiveImage] = useState<{ src: string; title: string; desc: string } | null>(null);
   const t = TRANSLATIONS[language];
 
@@ -50,13 +52,15 @@ export const VisualChronicle: React.FC<VisualChronicleProps> = ({ language }) =>
               onClick={() => setActiveImage(item)}
               className="flex flex-col bg-white rounded-xl overflow-hidden shadow-xs border border-[#e8dcc6] cursor-pointer group hover:-translate-y-1 hover:border-[#1a3c2c]/30 transition-all duration-300"
             >
-              <div className="aspect-square overflow-hidden relative">
+              <div className="aspect-square overflow-hidden relative bg-[#f8ece1]">
                 <img
                   src={item.src}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                  onError={handleImageError}
                 />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors pointer-events-none"></div>
                 <div className="absolute bottom-2.5 right-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow">
                   <span className="material-symbols-outlined text-[16px] text-[#1a3c2c]">zoom_in</span>
                 </div>
@@ -72,6 +76,19 @@ export const VisualChronicle: React.FC<VisualChronicleProps> = ({ language }) =>
             </div>
           ))}
         </div>
+
+        {/* Link to dedicated Gallery screen */}
+        {onViewFullGallery && (
+          <div className="mt-8 text-center">
+            <button
+              onClick={onViewFullGallery}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-[#f8ece1] text-[#1a3c2c] border border-[#e8dcc6] text-xs sm:text-sm font-bold shadow-xs hover:border-[#1a3c2c]/40 transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[18px] text-[#9d4225]">photo_library</span>
+              <span>{language === 'te' ? 'పూర్తి కిచెన్ గ్యాలరీని వీక్షించండి →' : 'Explore Full Kitchen Gallery →'}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Lightbox Modal */}
@@ -89,11 +106,12 @@ export const VisualChronicle: React.FC<VisualChronicleProps> = ({ language }) =>
                 src={activeImage.src}
                 alt={activeImage.title}
                 className="w-full h-full object-contain"
+                onError={handleImageError}
               />
               <button
                 onClick={() => setActiveImage(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors"
-                aria-label="Close photo preview"
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors cursor-pointer"
+                aria-label={language === 'te' ? 'మూసివేయండి' : 'Close photo preview'}
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>

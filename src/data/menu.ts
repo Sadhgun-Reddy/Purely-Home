@@ -1,139 +1,190 @@
-import type { Dish } from '../utils/cart';
+import type { Dish } from '../utils/cart.ts';
+import { BUSINESS_CONFIG } from '../config/business.ts';
 
-export const DISHES: Dish[] = [
+export interface MenuCategory {
+  id: string;
+  name: string;
+  nameTe: string;
+  icon: string;
+}
+
+export const MENU_CATEGORIES: MenuCategory[] = [
+  { id: 'all', name: 'All Selections', nameTe: 'అన్ని వంటకాలు', icon: 'restaurant_menu' },
+  { id: 'thalis', name: 'Thalis & Meals', nameTe: 'తాళి భోజనం', icon: 'lunch_dining' },
+  { id: 'curries', name: 'Curries & Dal', nameTe: 'కూరలు & పప్పు', icon: 'soup_kitchen' },
+  { id: 'breads_rice', name: 'Breads & Rice', nameTe: 'పుల్కాలు & అన్నం', icon: 'bakery_dining' },
+  { id: 'beverages', name: 'Beverages', nameTe: 'పానీయాలు', icon: 'local_cafe' }
+];
+
+/**
+ * Sample / Representative Dishes
+ * Note: These dishes represent typical home-style culinary offerings.
+ * Actual daily menu, pricing, and availability are subject to kitchen confirmation via WhatsApp.
+ */
+export const SAMPLE_DISHES: Dish[] = [
   {
     id: 'homestyle-veg-thali',
-    name: 'Special Homestyle Veg Thali',
-    nameTe: 'ప్రత్యేకమైన ఇంటి భోజనం తాళి',
-    price: 180,
+    name: 'Homestyle Vegetarian Thali',
+    nameTe: 'ఇంటి భోజనం తాళి (శాకాహారం)',
     category: 'thalis',
-    description: 'Steamed Sona Masoori Rice, Phulkas (3), Dal Tadka with Ghee, Seasonal Subzi, Pachadi, Curd & Roasted Papad.',
-    descriptionTe: 'తాజా సోనా మసూరి అన్నం, 3 వేడి పుల్కాలు, స్వచ్ఛమైన నెయ్యి దాల్ తడ్కా, కూరగాయల సబ్జీ, ఇంట్లో చేసిన పచ్చడి, పెరుగు, వేయించిన అప్పడం.',
-    tag: 'Most Loved',
+    price: 180,
+    description: 'Representative homestyle noon meal: steamed Sona Masoori rice, 2 whole wheat phulkas, dal of the day, seasonal regional curry, curd, and papad.',
+    descriptionTe: 'సంప్రదాయ ఇంటి భోజనం: వేడి సోనా మసూరి అన్నం, రెండు గోధుమ పుల్కాలు, రోజూ మారే పప్పు, తాజా కూరగాయల కూర, పెరుగు మరియు అప్పడం.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Sona Masoori Rice', '2 Phulkas', 'Daily Dal', 'Seasonal Sabzi', 'Curd'],
+    tagsTe: ['సోనా మసూరి అన్నం', '2 పుల్కాలు', 'పప్పు', 'కూరగాయల కూర', 'పెరుగు'],
     isVeg: true,
     mealTiming: 'Lunch & Dinner',
+    mealTimingTe: 'మధ్యాహ్నం & రాత్రి',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBvlWAJCXR1nUVrzjTRol0I4SALZnXrb5FiXAlRAXARlpzKvM2CIURLwpjKAoZs827ZH0YVA2SMOzIetwc8xsK6h59VObpXmUAleTwmW0rpkM9SDpezCDZlHR0VPGAqFqYg0gMQJ_ZlyRIHjnMVEJF6tf4Gp85H08QdyZrq9Rb34YC-aGc0QNywkhGBop3UT1qRsOEgSXCsraSjcimfCEVgdPB4MeDg_8Pyr_KdQFKH2nlsGZ_IDy95',
-    ingredients: ['Sona Masoori Rice', 'Whole Wheat Atta', 'Toor Dal', 'Desi Cow Ghee', 'Fresh Vegetables', 'Cold-Pressed Groundnut Oil'],
-    servings: 'Hearty meal for 1 person'
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
   },
   {
-    id: 'traditional-dal-sambar-handi',
-    name: 'Slow-Simmered Traditional Dal & Sambar Handi',
-    nameTe: 'మట్టిపాత్రలో ఉడికించిన సాంబార్ & దాల్ హండీ',
-    price: 140,
+    id: 'traditional-dal-sambar',
+    name: 'Traditional Dal & Sambar',
+    nameTe: 'సాంబార్ & దాల్ హండీ',
     category: 'curries',
-    description: 'Tender drumstick sambar or dal tadka tempered with mustard, cumin and dried red chillies. Served with steamed rice.',
-    descriptionTe: 'మునక్కాయ సాంబార్ లేదా దాల్ తడ్కా, ఆవాలు, జీలకర్ర, ఎండుమిర్చితో పోపు. తాజా అన్నంతో వడ్డింపు.',
-    tag: 'Claypot Special',
+    price: 130,
+    description: 'Slow-simmered homestyle toor dal and regional vegetable sambar tempered with mustard, cumin, and fresh curry leaves.',
+    descriptionTe: 'సాంప్రదాయ పద్ధతిలో ఉడికించిన కందిపప్పు మరియు ఆవాలు, జీలకర్ర పోపు పెట్టిన కూరగాయల సాంబార్.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Toor Dal', 'Regional Tamarind', 'Fresh Curry Leaves', 'Tempering'],
+    tagsTe: ['కందిపప్పు', 'నాటు చింతపండు', 'కరివేపాకు పోపు', 'సాంబార్'],
     isVeg: true,
-    mealTiming: "Chef's Signature",
+    mealTiming: 'Daily Kitchen Spec',
+    mealTimingTe: 'రోజువారీ వంటకం',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA5nPZc0cFrVDQSKqtmYCadme4SK8JpX-GPwdUW19B8sA2V3XtUFtcwG8F1nQaw9f2NFxWvnruiSqCmbok7DzVYkHNL-heqFNHeKAobTiFHLcO1CqASAGS-dvCpIaA7AzXok0gU8BvhKcfKTFbPlXKrri_QbiHyfqQPkDJrKORqeKoqWNUlMoAg1CtWsPtFT0riA0YoKdsm_vlFoEAApYhLYF0mwkka6OXOkASl1UcBQIOy3mg-aENR',
-    ingredients: ['Drumsticks', 'Shallots', 'Carrots', 'Toor Dal', 'Curry Leaves', 'Guntur Dried Chillies', 'Cow Ghee'],
-    servings: 'Served with 350ml Handi & Steamed Rice'
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
   },
   {
-    id: 'phulkas-earthen-pot-kurma',
-    name: 'Soft Phulkas with Earthen Pot Kurma',
-    nameTe: 'మృదువైన పుల్కాలు & కుర్మా',
-    price: 130,
+    id: 'phulkas-vegetable-kurma',
+    name: 'Phulkas with Homestyle Kurma',
+    nameTe: 'పుల్కాలు & కూరగాయల కుర్మా',
     category: 'breads_rice',
-    description: '4 whole wheat puffed phulkas served with slow-cooked coconut and cashew spiced vegetable gravy with seasonal root veggies.',
-    descriptionTe: '4 వేడి గోధుమ పుల్కాలు, కొబ్బరి మరియు జీడిపప్పు మసాలాతో నెమ్మదిగా ఉడికించిన కూరగాయల కుర్మా.',
-    tag: 'Evening Comfort',
+    price: 140,
+    description: 'Four soft oil-free whole wheat phulkas served with mildly spiced homestyle mixed vegetable kurma in light coconut gravy.',
+    descriptionTe: 'నూనె లేకుండా కాల్చిన 4 మెత్తని గోధుమ పుల్కాలు మరియు స్వచ్ఛమైన కూరగాయల కుర్మా.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['4 Phulkas', 'Whole Wheat Atta', 'Mixed Veg Kurma', 'No Added Palm Oil'],
+    tagsTe: ['4 పుల్కాలు', 'గోధుమ పిండి', 'కూరగాయల కుర్మా', 'కొబ్బరి గ్రేవీ'],
     isVeg: true,
-    mealTiming: 'Dinner Special',
+    mealTiming: 'Evening Spec',
+    mealTimingTe: 'సాయంత్రం / రాత్రి',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV5MtDj8Jr0VC_1Kub47SH5I7nIs1tERmevHyKIywJd6F9kgqigVcdP194hLH4nFT2Q6owMiwf1ZgmZZbVgaeXfkZL33iTRpnjFGsBiNY2QxPvnC84bLR62_NW4TuIRu1eW3EIaySyMZuuasTXoAKZ5lsDsiftNAScXrsKS3iaXIjcz7lTjAhtg8y7f4oQMvGva6wOrPrVXldPdviUP4JaPVYjHWNwOnIsJoOIQRM7QRRQX2f-W6XC',
-    ingredients: ['100% Whole Wheat', 'Cashews', 'Fresh Grated Coconut', 'Potatoes & Peas', 'Hand-ground Garam Masala'],
-    servings: '4 Fresh Phulkas + 250ml Kurma'
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
   },
   {
     id: 'telangana-tomato-pappu',
-    name: 'Telangana Tomato Pappu with Ghee Phulkas',
-    nameTe: 'తెలంగాణ టమాటా పప్పు & నెయ్యి పుల్కాలు',
-    price: 135,
+    name: 'Regional Tomato Pappu',
+    nameTe: 'నాటు టమాటా పప్పు',
     category: 'curries',
-    description: 'Tangy country tomato dal tempered with garlic cloves, cumin, curry leaves in pure cow ghee, served with 3 soft phulkas.',
-    descriptionTe: 'నాటు టమాటా పప్పు, వెల్లుల్లి, జీలకర్ర, కరివేపాకు నెయ్యి పోపుతో, 3 మెత్తని పుల్కాలు.',
-    tag: 'Homestyle Classic',
+    price: 120,
+    description: 'Familiar regional tomato and toor dal preparation infused with crushed garlic, green chillies, and aromatic tempering.',
+    descriptionTe: 'వెల్లుల్లి, పచ్చిమిర్చి మరియు ఆవాల పోపుతో సంప్రదాయ పద్ధతిలో వండిన నాటు టమాటా పప్పు.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Country Tomatoes', 'Toor Dal', 'Garlic Tadka', 'Regional Taste'],
+    tagsTe: ['నాటు టమాటాలు', 'కందిపప్పు', 'వెల్లుల్లి పోపు', 'రుచికరమైన పప్పు'],
     isVeg: true,
-    mealTiming: 'Lunch & Dinner',
+    mealTiming: 'Daily Homestyle',
+    mealTimingTe: 'రోజువారీ ఇంటి భోజనం',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDpH_wywcGCIShsAKxwrhzos3VMh4a4-JO_L3rwm478c1_eouEq6w9xk5s4oZ2Xj6p15mTXR0mTHgFahKEtoyWo48a1u1dCZCtVOfXruMI1CxDbHbM1ohixF48q-VYGFKXGtfRrk410ouzLV3mZoIPrY2qFZ-zEFcmFUInLg7oN2spt-EPLah9QTrqGRVgYDBxzeFLoE0BTTsws8tZYp8ZUfcQAKTkJbagLgypMiXBC2joOUZQd5pdy',
-    ingredients: ['Country Tomatoes', 'Yellow Moong & Toor Dal', 'Garlic', 'Pure Desi Ghee', 'Whole Wheat Atta'],
-    servings: '3 Phulkas + 250ml Dal'
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
+  },
+  {
+    id: 'gutthi-vankaya-kura',
+    name: 'Gutthi Vankaya Curry',
+    nameTe: 'గుత్తి వంకాయ కూర',
+    category: 'curries',
+    price: 150,
+    description: 'Traditional stuffed small brinjals simmered in a savory roasted peanut, sesame seed, and fragrant regional masala gravy.',
+    descriptionTe: 'వేరుశనగలు, నువ్వులు మరియు మసాలాతో కూడిన సంప్రదాయ ప్రాంతీయ గుత్తి వంకాయ కూర.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Small Brinjals', 'Roasted Peanuts', 'Sesame Gravy', 'Homestyle Spices'],
+    tagsTe: ['గుత్తి వంకాయలు', 'వేరుశనగలు', 'నువ్వుల మసాలా', 'గ్రేవీ కూర'],
+    isVeg: true,
+    mealTiming: 'Special Lunch & Dinner',
+    mealTimingTe: 'ప్రత్యేక మధ్యాహ్నం & రాత్రి',
+    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80',
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
   },
   {
     id: 'perugu-annam-curd-rice',
-    name: 'Tempered Curd Rice with Pomegranate (Perugu Annam)',
-    nameTe: 'దద్దోజనం (పెరుగు అన్నం & దానిమ్మ)',
-    price: 95,
+    name: 'Seasoned Curd Rice (Perugu Annam)',
+    nameTe: 'దద్దోజనం (పెరుగు అన్నం)',
     category: 'breads_rice',
-    description: 'Creamy homemade curd mixed with soft mashed rice, tempered with mustard seeds, curry leaves, ginger, and ruby pomegranate.',
-    descriptionTe: 'ఇంట్లో తోడుపెట్టిన స్వచ్ఛమైన పెరుగు అన్నం, ఆవాలు, అల్లం, కరివేపాకు పోపు మరియు తాజా దానిమ్మ గింజలతో.',
-    tag: 'Cooling & Light',
+    price: 95,
+    description: 'Simple home-style curd rice with fresh domestic curd, tempered with mustard seeds, cumin, chopped ginger, and curry leaves.',
+    descriptionTe: 'ఇంట్లో తోడుపెట్టిన తాజా పెరుగుతో కలిపిన అన్నం, ఆవాలు, అల్లం మరియు కరివేపాకు పోపు.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Fresh Domestic Curd', 'Mustard Seeds', 'Ginger', 'Curry Leaves'],
+    tagsTe: ['ఇంటి పెరుగు', 'ఆవాలు & జీలకర్ర', 'అల్లం', 'కరివేపాకు'],
     isVeg: true,
-    mealTiming: 'All Day Comfort',
+    mealTiming: 'Comfort Fare',
+    mealTimingTe: 'హోమ్‌స్టైల్ వంటకం',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD7MASIvQaXFyv_4fMuFO8I0p0iJB9N1oGoCH-0ooX8K3W2AELFPgtir74a3pw8aTaz_ccapYKisxh1InZ968Ew8tSsU6q655HjJTapct5ZWt9N22xCrFj3P963nIsCXeHK5YVWg9K4hauQ6nszj8M6hq_pMq4VG0uP-2ALfSfjb4OmlKj2ACvQCvm4zJaWrfT4c2YB_jzXW0DBa07IoV3vtlLUSt0DvS6Zmu51NJ1ycDe_-_Zny1ll',
-    ingredients: ['Home-Set Thick Curd', 'Sona Masoori Rice', 'Pomegranate Arils', 'Mustard & Ginger', 'Curry Leaves'],
-    servings: '350ml Bowl'
-  },
-  {
-    id: 'kumbakonam-filter-coffee',
-    name: 'Kumbakonam Degree Filter Coffee',
-    nameTe: 'కుంభకోణం డిగ్రీ ఫిల్టర్ కాఫీ',
-    price: 50,
-    category: 'beverages',
-    description: 'Slow-brewed freshly roasted coffee decoction blended with full-cream hot milk and unrefined cane jaggery or sugar.',
-    descriptionTe: 'తాజా ఫిల్టర్ కాఫీ డికాక్షన్, చిక్కని పాలు, సంప్రదాయ పద్ధతిలో కాచిన అమృతం.',
-    tag: 'Fresh Brew',
-    isVeg: true,
-    mealTiming: 'Morning & Evening',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
-    ingredients: ['80:20 Roasted Coffee-Chicory', 'Fresh Full Cream Milk'],
-    servings: '1 Brass Tumbler (150ml)'
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
   },
   {
     id: 'masala-majjiga',
-    name: 'Spiced Buttermilk (Masala Majjiga)',
+    name: 'Traditional Majjiga (Spiced Buttermilk)',
     nameTe: 'మసాలా మజ్జిగ',
-    price: 40,
     category: 'beverages',
-    description: 'Earthen pot churned buttermilk spiced with ginger, green chillies, curry leaves, and a dash of roasted cumin powder.',
-    descriptionTe: 'మట్టిపాత్రలో చిలికిన చల్లని మజ్జిగ, జీలకర్ర పొడి, అల్లం, కరివేపాకుతో.',
-    tag: 'Digestive Elixir',
+    price: 40,
+    description: 'Chilled home-churned buttermilk lightly seasoned with crushed ginger, green chilli, cumin powder, and fresh coriander leaves.',
+    descriptionTe: 'అల్లం, జీలకర్ర మరియు కొత్తిమీర కలిపిన చల్లని, సహజమైన ఇంటి మజ్జిగ.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Churned Curd', 'Crushed Ginger', 'Roasted Jeera', 'Coriander'],
+    tagsTe: ['చల్లని మజ్జిగ', 'అల్లం ముక్కలు', 'జీలకర్ర పొడి', 'కొత్తిమీర'],
     isVeg: true,
     mealTiming: 'With Meals',
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80',
-    ingredients: ['Homemade Curd', 'Roasted Jeera', 'Ginger', 'Green Chilli', 'Rock Salt'],
-    servings: '300ml Earthen Kulhad / Bottle'
+    mealTimingTe: 'భోజనంతో పాటు',
+    image: 'https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=600&q=80',
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
+  },
+  {
+    id: 'south-filter-coffee',
+    name: 'Traditional Filter Coffee',
+    nameTe: 'సంప్రదాయ ఫిల్టర్ కాఫీ',
+    category: 'beverages',
+    price: 50,
+    description: 'Freshly brewed aromatic chicory-blend South Indian coffee decoction served piping hot with creamy boiled milk.',
+    descriptionTe: 'సంప్రదాయ పద్ధతిలో కాచిన ఘుమఘుమలాడే తాజా ఫిల్టర్ కాఫీ.',
+    tag: 'Sample Representation',
+    tagTe: 'నమూనా వంటకం',
+    tags: ['Fresh Brewed Decoction', 'Hot Boiled Milk', 'Traditional Taste'],
+    tagsTe: ['తాజా డికాక్షన్', 'వేడి పాలు', 'సంప్రదాయ కాఫీ'],
+    isVeg: true,
+    mealTiming: 'Morning & Evening',
+    mealTimingTe: 'ఉదయం & సాయంత్రం',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
+    isSample: true,
+    notes: 'Price & exact items confirmed on WhatsApp'
   }
 ];
 
-export const REVIEWS = [
-  {
-    id: 1,
-    name: 'Dr. Swapna Reddy',
-    locality: 'SMR Vinay Fountainhead, Hafeezpet',
-    rating: 5,
-    date: '3 days ago',
-    text: 'Living in the same community, Purely Home has been a blessing. The dal tadka smells exactly like my grandmother’s kitchen back in Warangal. No heavy restaurant acidity, no excess oil. Genuine home food.',
-    verified: true
-  },
-  {
-    id: 2,
-    name: 'Karthik Varma',
-    locality: 'Miyapur (HITEC Corridor)',
-    rating: 5,
-    date: '1 week ago',
-    text: 'I work in HITEC City and order their lunch thali 4 days a week. The phulkas stay soft even after an hour, and the cold-pressed oil taste is unmistakable. Best cloud kitchen in Miyapur-Hafeezpet belt!',
-    verified: true
-  },
-  {
-    id: 3,
-    name: 'Ananya & Rakesh Sen',
-    locality: 'Calvary Temple Road, Hafeezpet',
-    rating: 5,
-    date: '2 weeks ago',
-    text: 'We ordered the Handi Sambar and Phulka Kurma for a family gathering of 8. Everyone asked if we cooked it at home. Earthen pot aroma is real! Very humble and punctual hosts.',
-    verified: true
-  }
-];
+export const DISHES = SAMPLE_DISHES;
+
+/**
+ * Public Reputation Information
+ * Sourced directly from Google Maps listing; subject to live verification with business owner.
+ */
+export const GOOGLE_REPUTATION = {
+  rating: BUSINESS_CONFIG.reputation.rating,
+  reviewCount: BUSINESS_CONFIG.reputation.reviewCount,
+  mapsUrl: BUSINESS_CONFIG.googleMapsUrl,
+  note: BUSINESS_CONFIG.reputation.verificationNote
+};

@@ -1,78 +1,85 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateSubtotal, calculatePackagingFee, calculateDeliveryFee, calculateTotal, generateWhatsAppMessage } from './cart.ts';
-import type { CartItem, Dish, OrderDetails } from './cart.ts';
+import { countSelectedItems, generateWhatsAppEnquiryMessage, generateWhatsAppEnquiryUrl } from './cart.ts';
+import type { Dish, SelectionItem, EnquiryDetails } from './cart.ts';
 
-const mockDish1: Dish = {
-  id: 'thali-1',
-  name: 'Special Homestyle Veg Thali',
-  price: 180,
+const sampleDish1: Dish = {
+  id: 'homestyle-veg-thali',
+  name: 'Homestyle Vegetarian Thali',
   category: 'thalis',
-  description: 'Steamed Sona Masoori Rice, Phulkas (3), Dal Tadka',
+  description: 'Steamed rice, phulkas, dal and seasonal homestyle curry.',
   isVeg: true,
   mealTiming: 'Lunch & Dinner',
-  image: 'https://example.com/thali.jpg'
+  image: 'https://example.com/thali.jpg',
+  isSample: true
 };
 
-const mockDish2: Dish = {
-  id: 'phulka-1',
-  name: 'Soft Phulkas with Earthen Pot Kurma',
-  price: 130,
+const sampleDish2: Dish = {
+  id: 'phulkas-kurma',
+  name: 'Phulkas with Vegetable Kurma',
   category: 'breads_rice',
-  description: '4 whole wheat puffed phulkas with kurma',
+  description: 'Whole wheat phulkas served with spiced vegetable kurma.',
   isVeg: true,
-  mealTiming: 'Dinner Special',
-  image: 'https://example.com/phulka.jpg'
+  mealTiming: 'Dinner',
+  image: 'https://example.com/phulkas.jpg',
+  isSample: true
 };
 
-test('cart subtotal computes correctly for multiple quantities', () => {
-  const items: CartItem[] = [
-    { dish: mockDish1, quantity: 2, spiceLevel: 'medium' },
-    { dish: mockDish2, quantity: 1, spiceLevel: 'mild' }
+test('countSelectedItems sums quantities accurately', () => {
+  const items: SelectionItem[] = [
+    { dish: sampleDish1, quantity: 2 },
+    { dish: sampleDish2, quantity: 3 }
   ];
-  // 180 * 2 + 130 = 490
-  assert.equal(calculateSubtotal(items), 490);
+  assert.equal(countSelectedItems(items), 5);
+  assert.equal(countSelectedItems([]), 0);
 });
 
-test('packaging fee caps reasonably and handles empty cart', () => {
-  assert.equal(calculatePackagingFee([]), 0);
-  const items: CartItem[] = [
-    { dish: mockDish1, quantity: 1, spiceLevel: 'medium' }
-  ];
-  assert.equal(calculatePackagingFee(items), 5);
-});
-
-test('delivery fee is 0 for pickup, 30 for low value, and free above 400', () => {
-  assert.equal(calculateDeliveryFee(200, 'pickup'), 0);
-  assert.equal(calculateDeliveryFee(200, 'delivery'), 30);
-  assert.equal(calculateDeliveryFee(450, 'delivery'), 0);
-});
-
-test('calculateTotal sums subtotal, packaging, and delivery correctly', () => {
-  const items: CartItem[] = [
-    { dish: mockDish1, quantity: 1, spiceLevel: 'medium' }
-  ];
-  // subtotal 180 + packaging 5 + delivery 30 = 215
-  assert.equal(calculateTotal(items, 'delivery'), 215);
-  // for pickup: subtotal 180 + packaging 5 + delivery 0 = 185
-  assert.equal(calculateTotal(items, 'pickup'), 185);
-});
-
-test('generateWhatsAppMessage contains key dish names and delivery details', () => {
-  const details: OrderDetails = {
-    items: [{ dish: mockDish1, quantity: 2, spiceLevel: 'andhra-spicy' }],
-    orderType: 'delivery',
-    deliverySlot: '12:30 PM - 1:15 PM',
-    customerName: 'Aditi Rao',
-    customerPhone: '9876543210',
-    deliveryAddress: 'Flat 402, SMR Vinay Fountainhead, Hafeezpet',
-    notes: 'Please pack ghee separately'
+test('generateWhatsAppEnquiryMessage does not claim an order is submitted and formats conversation politely', () => {
+  const details: EnquiryDetails = {
+    items: [{ dish: sampleDish1, quantity: 2 }],
+    customerName: 'Sadhgun',
+    notes: 'Please let me know if pickup is available this afternoon.'
   };
 
-  const message = generateWhatsAppMessage(details);
-  assert.ok(message.includes('Special Homestyle Veg Thali'));
-  assert.ok(message.includes('Aditi Rao'));
-  assert.ok(message.includes('Flat 402, SMR Vinay Fountainhead'));
-  assert.ok(message.includes('Andhra Spicy'));
-  assert.ok(message.includes('Please pack ghee separately'));
+  const message = generateWhatsAppEnquiryMessage(details);
+
+  // Must not claim order submitted or simulate checkout
+  assert.ok(!message.includes('Total Amount'));
+  assert.ok(!message.includes('Payment QR'));
+  assert.ok(!message.includes('Order Placed'));
+
+  // Must contain clear enquiry phrasing
+  assert.ok(message.includes('enquire about the availability'));
+  assert.ok(message.includes('Homestyle Vegetarian Thali (Qty: 2)'));
+  assert.ok(message.includes('Sadhgun'));
+  assert.ok(message.includes('SMR Vinay Fountainhead'));
+  assert.ok(message.includes('Please let me know if pickup is available this afternoon.'));
+});
+
+test('generateWhatsAppEnquiryUrl creates a valid URL targeting verified phone number', () => {
+  const details: EnquiryDetails = {
+    items: [],
+    customerName: 'Visitor'
+  };
+
+  const url = generateWhatsAppEnquiryUrl(details);
+  assert.ok(url.startsWith('https://wa.me/918790563262?text='));
+  assert.ok(url.includes('Namaste%20Purely%20Home'));
+});
+
+test('generateWhatsAppEnquiryUrl correctly handles multiple items and Telugu characters', () => {
+  const details: EnquiryDetails = {
+    items: [
+      { dish: sampleDish1, quantity: 1 },
+      { dish: sampleDish2, quantity: 4 }
+    ],
+    customerName: 'సుమంత్',
+    notes: 'హఫీజ్‌పేట్ పికప్'
+  };
+
+  const url = generateWhatsAppEnquiryUrl(details);
+  assert.ok(url.includes('918790563262'));
+  assert.ok(url.includes(encodeURIComponent('సుమంత్')));
+  assert.ok(url.includes(encodeURIComponent('Homestyle Vegetarian Thali (Qty: 1)')));
+  assert.ok(url.includes(encodeURIComponent('Phulkas with Vegetable Kurma (Qty: 4)')));
 });

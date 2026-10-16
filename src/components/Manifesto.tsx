@@ -1,12 +1,13 @@
 import React from 'react';
-import type { Language } from '../data/translations';
-import { TRANSLATIONS } from '../data/translations';
+import type { Language } from '../data/translations.ts';
+import { TRANSLATIONS } from '../data/translations.ts';
 
 interface ManifestoProps {
   language: Language;
+  onReadFullStory?: () => void;
 }
 
-export const Manifesto: React.FC<ManifestoProps> = ({ language }) => {
+export const Manifesto: React.FC<ManifestoProps> = ({ language, onReadFullStory }) => {
   const t = TRANSLATIONS[language];
 
   return (
@@ -25,16 +26,28 @@ export const Manifesto: React.FC<ManifestoProps> = ({ language }) => {
               {t.manifesto.paragraph}
             </p>
 
-            {/* Transparent Box */}
+            {/* Residential Kitchen Box */}
             <div className="p-5 bg-[#f8ece1] rounded-xl border border-[#e8dcc6]">
               <div className="flex items-center gap-2 text-[#1a3c2c] mb-1.5">
-                <span className="material-symbols-outlined text-[22px]">verified</span>
+                <span className="material-symbols-outlined text-[22px]">apartment</span>
                 <span className="text-sm font-bold">{t.manifesto.transparentTitle}</span>
               </div>
               <p className="text-xs sm:text-sm text-[#414844] leading-relaxed">
                 {t.manifesto.transparentDesc}
               </p>
             </div>
+
+            {onReadFullStory && (
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={onReadFullStory}
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#9d4225] hover:text-[#7d351e] transition-colors cursor-pointer"
+                >
+                  <span>{language === 'te' ? 'మా పూర్తి కథ & వంటశాల వివరాలు చదవండి →' : 'Read Our Full Story & Philosophy →'}</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* 3 Pillars Grid */}
@@ -42,7 +55,7 @@ export const Manifesto: React.FC<ManifestoProps> = ({ language }) => {
             {/* Pillar 1 */}
             <div className="p-5 sm:p-6 bg-white rounded-xl shadow-xs border border-[#e8dcc6] flex flex-col sm:flex-row gap-4 items-start hover:border-[#1a3c2c]/30 transition-colors">
               <div className="w-12 h-12 rounded-lg bg-[#1a3c2c] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <span className="material-symbols-outlined text-[24px]">oil_barrel</span>
+                <span className="material-symbols-outlined text-[24px]">soup_kitchen</span>
               </div>
               <div>
                 <h3 className="font-serif text-base sm:text-lg font-bold text-[#201b14] mb-1">
@@ -57,7 +70,7 @@ export const Manifesto: React.FC<ManifestoProps> = ({ language }) => {
             {/* Pillar 2 */}
             <div className="p-5 sm:p-6 bg-white rounded-xl shadow-xs border border-[#e8dcc6] flex flex-col sm:flex-row gap-4 items-start hover:border-[#1a3c2c]/30 transition-colors">
               <div className="w-12 h-12 rounded-lg bg-[#9d4225] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <span className="material-symbols-outlined text-[24px]">timelapse</span>
+                <span className="material-symbols-outlined text-[24px]">schedule</span>
               </div>
               <div>
                 <h3 className="font-serif text-base sm:text-lg font-bold text-[#201b14] mb-1">
@@ -72,7 +85,7 @@ export const Manifesto: React.FC<ManifestoProps> = ({ language }) => {
             {/* Pillar 3 */}
             <div className="p-5 sm:p-6 bg-white rounded-xl shadow-xs border border-[#e8dcc6] flex flex-col sm:flex-row gap-4 items-start hover:border-[#1a3c2c]/30 transition-colors">
               <div className="w-12 h-12 rounded-lg bg-[#3b3525] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <span className="material-symbols-outlined text-[24px]">clean_hands</span>
+                <span className="material-symbols-outlined text-[24px]">location_on</span>
               </div>
               <div>
                 <h3 className="font-serif text-base sm:text-lg font-bold text-[#201b14] mb-1">

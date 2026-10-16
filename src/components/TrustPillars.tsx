@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Language } from '../data/translations';
-import { TRANSLATIONS } from '../data/translations';
+import type { Language } from '../data/translations.ts';
+import { TRANSLATIONS } from '../data/translations.ts';
 
 interface TrustPillarsProps {
   language: Language;
@@ -46,7 +46,7 @@ export const TrustPillars: React.FC<TrustPillarsProps> = ({ language }) => {
           {/* Card 3 */}
           <div className="flex items-start gap-4 p-5 bg-white rounded-xl shadow-xs border border-[#e8dcc6] hover:border-[#1a3c2c]/30 hover:-translate-y-0.5 transition-all">
             <div className="w-11 h-11 rounded-full bg-[#315342] text-[#ede1cb] flex items-center justify-center shrink-0 shadow-xs">
-              <span className="material-symbols-outlined text-[22px]">calendar_today</span>
+              <span className="material-symbols-outlined text-[22px]">chat</span>
             </div>
             <div>
               <h2 className="font-serif text-base sm:text-lg font-bold text-[#201b14] mb-1">

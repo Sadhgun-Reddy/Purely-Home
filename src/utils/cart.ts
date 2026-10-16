@@ -1,131 +1,92 @@
+import { BUSINESS_CONFIG, getWhatsAppUrl } from '../config/business.ts';
+
 export interface Dish {
   id: string;
   name: string;
   nameTe?: string;
-  price: number;
   category: 'thalis' | 'curries' | 'breads_rice' | 'specials' | 'beverages';
   description: string;
   descriptionTe?: string;
   tag?: string;
+  tagTe?: string;
   isVeg: boolean;
   mealTiming: string;
+  mealTimingTe?: string;
   image: string;
-  ingredients?: string[];
-  servings?: string;
+  isSample: boolean;
+  notes?: string;
+  price?: number;
+  tags?: string[];
+  tagsTe?: string[];
 }
 
-export interface CartItem {
+export interface SelectionItem {
   dish: Dish;
   quantity: number;
-  spiceLevel: 'mild' | 'medium' | 'andhra-spicy';
-  specialNote?: string;
 }
 
-export interface OrderDetails {
-  items: CartItem[];
-  orderType: 'delivery' | 'pickup';
-  deliverySlot: string;
-  customerName: string;
-  customerPhone: string;
-  deliveryAddress?: string;
+export interface EnquiryDetails {
+  items: SelectionItem[];
+  customerName?: string;
   notes?: string;
-  phoneNumber?: string; // target WhatsApp phone number
 }
 
 /**
- * Calculates item subtotal
+ * Total item count selected by the visitor
  */
-export function calculateSubtotal(items: CartItem[]): number {
-  return items.reduce((total, item) => total + item.dish.price * item.quantity, 0);
+export function countSelectedItems(items: SelectionItem[]): number {
+  return items.reduce((sum, item) => sum + item.quantity, 0);
 }
 
 /**
- * Packaging fee: ₹10 per main meal/thali container, eco-friendly food grade packaging
+ * Generate formatted WhatsApp message for meal availability enquiry
+ * Does NOT simulate a checkout or claim an order is placed.
+ * Opens a real enquiry conversation with the kitchen.
  */
-export function calculatePackagingFee(items: CartItem[]): number {
-  const totalQuantity = items.reduce((count, item) => count + item.quantity, 0);
-  return totalQuantity > 0 ? Math.min(totalQuantity * 5, 25) : 0;
-}
+export function generateWhatsAppEnquiryMessage(details: EnquiryDetails): string {
+  const { items, customerName, notes } = details;
 
-/**
- * Delivery fee calculation:
- * Pickup is ₹0.
- * In Hafeezpet / Miyapur area: Flat ₹30 (or free above ₹400).
- */
-export function calculateDeliveryFee(subtotal: number, orderType: 'delivery' | 'pickup'): number {
-  if (orderType === 'pickup') return 0;
-  if (subtotal >= 400) return 0;
-  return 30;
-}
+  let msg = `Namaste Purely Home,\n\n`;
+  msg += `I am contacting you regarding your home-style cloud kitchen in Hafeezpet (SMR Vinay Fountainhead).\n`;
 
-/**
- * Total payable amount
- */
-export function calculateTotal(items: CartItem[], orderType: 'delivery' | 'pickup'): number {
-  const subtotal = calculateSubtotal(items);
-  if (subtotal === 0) return 0;
-  const packaging = calculatePackagingFee(items);
-  const delivery = calculateDeliveryFee(subtotal, orderType);
-  return subtotal + packaging + delivery;
-}
-
-/**
- * Format Indian rupee currency
- */
-export function formatCurrency(amount: number): string {
-  return `₹${amount}`;
-}
-
-/**
- * Generate formatted WhatsApp message and direct click URL
- */
-export function generateWhatsAppMessage(details: OrderDetails): string {
-  const { items, orderType, deliverySlot, customerName, customerPhone, deliveryAddress, notes } = details;
-  const subtotal = calculateSubtotal(items);
-  const packaging = calculatePackagingFee(items);
-  const delivery = calculateDeliveryFee(subtotal, orderType);
-  const total = subtotal + packaging + delivery;
-
-  let msg = `🌿 *PURELY HOME – ORDER REQUEST*\n`;
-  msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `*Order Type:* ${orderType === 'pickup' ? '🛍️ Kitchen Pickup (SMR Fountainhead)' : '🛵 Doorstep Delivery'}\n`;
-  msg += `*Dispatch Slot:* ${deliverySlot}\n`;
-
-  if (customerName) {
-    msg += `*Name:* ${customerName}\n`;
-  }
-  if (customerPhone) {
-    msg += `*Phone:* ${customerPhone}\n`;
-  }
-  if (orderType === 'delivery' && deliveryAddress) {
-    msg += `*Delivery Address:* ${deliveryAddress}\n`;
+  if (customerName && customerName.trim()) {
+    msg += `Name: ${customerName.trim()}\n`;
   }
 
-  msg += `\n*Selected Items:*\n`;
-  items.forEach((item, index) => {
-    const spiceText = item.spiceLevel === 'mild' ? 'Mild' : item.spiceLevel === 'andhra-spicy' ? 'Andhra Spicy 🔥' : 'Medium Spice';
-    msg += `${index + 1}. *${item.dish.name}* x ${item.quantity} - ₹${item.dish.price * item.quantity}\n`;
-    msg += `   └ Spice: ${spiceText}${item.specialNote ? ` | Note: ${item.specialNote}` : ''}\n`;
-  });
-
-  msg += `\n*Bill Summary:*\n`;
-  msg += `• Subtotal: ₹${subtotal}\n`;
-  msg += `• Eco-packaging: ₹${packaging}\n`;
-  msg += `• Delivery: ${delivery === 0 ? 'Free' : `₹${delivery}`}\n`;
-  msg += `*Total Amount:* ₹${total}\n`;
-
-  if (notes) {
-    msg += `\n*Special Instructions:* ${notes}\n`;
+  if (items.length > 0) {
+    msg += `\nI would like to enquire about the availability and pricing for the following dishes today:\n`;
+    items.forEach((item) => {
+      msg += `• ${item.dish.name} (Qty: ${item.quantity})\n`;
+    });
+  } else {
+    msg += `\nCould you please share today's available lunch/dinner menu and order timings?\n`;
   }
 
-  msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `_Please confirm today's availability and send payment QR. Thank you!_`;
+  if (notes && notes.trim()) {
+    msg += `\nNote/Question: ${notes.trim()}\n`;
+  }
 
+  msg += `\nThank you!`;
   return msg;
 }
 
-export function generateWhatsAppOrderUrl(details: OrderDetails): string {
-  const targetPhone = details.phoneNumber || '918790563262';
-  const text = generateWhatsAppMessage(details);
-  return `https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`;
+/**
+ * Generates direct WhatsApp URL with the enquiry message
+ */
+export function generateWhatsAppEnquiryUrl(details: EnquiryDetails): string {
+  const text = generateWhatsAppEnquiryMessage(details);
+  return getWhatsAppUrl(text);
 }
+
+/**
+ * Generates direct WhatsApp URL for a single dish enquiry
+ */
+export function getDishWhatsAppUrl(dish: Dish, language: 'en' | 'te' = 'en'): string {
+  const dishName = language === 'te' && dish.nameTe ? dish.nameTe : dish.name;
+  const priceText = dish.price ? ` (Indicative: ₹${dish.price})` : '';
+  const text = language === 'te'
+    ? `నమస్తే ప్యూర్లీ హోమ్,\n\nమీ హఫీజ్‌పేట్ క్లౌడ్ కిచెన్‌లో నేడు "${dishName}" లభ్యత మరియు ఆర్డర్ వివరాల గురించి తెలుసుకోవాలనుకుంటున్నాను.\n\nధన్యవాదాలు!`
+    : `Namaste Purely Home,\n\nI would like to enquire about the availability and details for "${dishName}"${priceText} at your Hafeezpet cloud kitchen today.\n\nThank you!`;
+  return getWhatsAppUrl(text);
+}
+

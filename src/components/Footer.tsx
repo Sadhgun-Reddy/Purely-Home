@@ -1,6 +1,7 @@
 import React from 'react';
-import type { Language } from '../data/translations';
-import { TRANSLATIONS } from '../data/translations';
+import type { Language } from '../data/translations.ts';
+import { TRANSLATIONS } from '../data/translations.ts';
+import { BUSINESS_CONFIG } from '../config/business.ts';
 
 interface FooterProps {
   language: Language;
@@ -9,6 +10,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ language, onNavigate }) => {
   const t = TRANSLATIONS[language];
+  const { phoneLink, phoneDisplay, googleMapsUrl } = BUSINESS_CONFIG;
 
   return (
     <footer className="w-full bg-[#1a3c2c] text-[#ede1cb] pt-12 sm:pt-16 pb-12 sm:pb-16 border-t border-[#315342]">
@@ -45,16 +47,16 @@ export const Footer: React.FC<FooterProps> = ({ language, onNavigate }) => {
                 {t.nav.home}
               </button>
               <button
-                onClick={() => onNavigate('specials-menu')}
+                onClick={() => onNavigate('menu')}
                 className="text-left text-xs text-[#d1c5b0] hover:text-white transition-colors cursor-pointer"
               >
-                {language === 'te' ? 'మెనూ & నేటి ప్రత్యేకతలు' : 'Menu & Daily Specials'}
+                {t.nav.menu}
               </button>
               <button
-                onClick={() => onNavigate('manifesto')}
+                onClick={() => onNavigate('about')}
                 className="text-left text-xs text-[#d1c5b0] hover:text-white transition-colors cursor-pointer"
               >
-                {language === 'te' ? 'మా కథ & సంప్రదాయం' : 'Our Heritage & Kitchen Story'}
+                {t.nav.about}
               </button>
               <button
                 onClick={() => onNavigate('gallery')}
@@ -89,25 +91,25 @@ export const Footer: React.FC<FooterProps> = ({ language, onNavigate }) => {
             </p>
             <div className="flex flex-col gap-2 pt-1">
               <a
-                href="tel:08790563262"
+                href={phoneLink}
                 className="text-xs text-[#c5ebd5] hover:text-white transition-colors flex items-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-[16px]">call</span>
-                <span>087905 63262</span>
+                <span>{phoneDisplay}</span>
               </a>
               <a
-                href="https://maps.google.com/?q=SMR+Vinay+Fountainhead+Hafeezpet+Hyderabad"
+                href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-[#d1c5b0] hover:text-white transition-colors flex items-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-[16px]">map</span>
-                <span>{language === 'te' ? 'మ్యాప్స్‌లో చూడండి' : 'View on Google Maps'}</span>
+                <span>{language === 'te' ? 'గూగుల్ మ్యాప్స్‌లో చూడండి' : 'View on Google Maps'}</span>
               </a>
             </div>
           </div>
 
-          {/* Column 4: Fresh Order Notice */}
+          {/* Column 4: Notice */}
           <div className="flex flex-col gap-3">
             <span className="font-serif text-sm font-bold text-white">
               {t.footer.freshNotice}

@@ -1,6 +1,7 @@
 import React from 'react';
-import type { Language } from '../data/translations';
-import { TRANSLATIONS } from '../data/translations';
+import type { Language } from '../data/translations.ts';
+import { TRANSLATIONS } from '../data/translations.ts';
+import { BUSINESS_CONFIG, getWhatsAppUrl } from '../config/business.ts';
 
 interface LocationSpotlightProps {
   language: Language;
@@ -8,6 +9,13 @@ interface LocationSpotlightProps {
 
 export const LocationSpotlight: React.FC<LocationSpotlightProps> = ({ language }) => {
   const t = TRANSLATIONS[language];
+  const { phoneLink, phoneDisplay, googleMapsUrl } = BUSINESS_CONFIG;
+
+  const whatsappUrl = getWhatsAppUrl(
+    language === 'te'
+      ? 'నమస్తే ప్యూర్లీ హోమ్, కిచెన్ చిరునామా మరియు ఆర్డర్ పికప్ వివరాలు తెలుసుకోవాలనుకుంటున్నాను.'
+      : 'Hello Purely Home, I would like to enquire about kitchen pickup and order arrangements.'
+  );
 
   return (
     <section id="contact" className="w-full py-12 sm:py-16 bg-[#f8ece1]">
@@ -51,15 +59,15 @@ export const LocationSpotlight: React.FC<LocationSpotlightProps> = ({ language }
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3">
                 <a
-                  href="tel:08790563262"
+                  href={phoneLink}
                   className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-[#1a3c2c] rounded-lg text-xs sm:text-sm font-bold shadow-sm hover:bg-[#ede1cb] transition-colors"
                 >
                   <span className="material-symbols-outlined text-[18px]">call</span>
-                  <span>{t.contact.callBtn}</span>
+                  <span>{phoneDisplay}</span>
                 </a>
 
                 <a
-                  href="https://wa.me/918790563262?text=Hello%20Purely%20Home,%20I%20would%20like%20to%20order%20for%20pickup/delivery"
+                  href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#9d4225] text-white rounded-lg text-xs sm:text-sm font-bold shadow-sm hover:bg-[#83341b] transition-colors"
@@ -96,7 +104,7 @@ export const LocationSpotlight: React.FC<LocationSpotlightProps> = ({ language }
                         {t.contact.mapSubtitle}
                       </span>
                       <a
-                        href="https://maps.google.com/?q=SMR+Vinay+Fountainhead+Hafeezpet+Hyderabad"
+                        href={googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#1a3c2c] hover:text-[#9d4225] underline underline-offset-2"
